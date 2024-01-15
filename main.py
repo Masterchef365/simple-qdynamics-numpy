@@ -71,6 +71,13 @@ fig, ax = plt.subplots()
 
 cj = solve_for_coeffs(eigvects, E, desired_init_psi)
 
+psi_init_energy = np.sum((cj * cj.conjugate()).real * E)
+print("Psi init energy: ", psi_init_energy)
+
+#most_similar = np.argmin(np.abs(E - psi_init_energy))
+#cj = np.zeros_like(cj)
+#cj[most_similar] = 1.0
+
 #print("Coefficients: ", cj)
 
 #print(cj)
@@ -86,13 +93,14 @@ def update(frame):
     psi = solve_for_psi(cj, eigvects, E, t=float(frame))
     #line_V.set_ydata(np.minimum(V/v0,1.))
     P = (psi * psi.conjugate()).real
-    line_P.set_ydata(P)
+    line_P.set_ydata(P * 20.)
     #line_psi.set_ydata(psi.real)
     #plt.savefig(f"anim/{frame:04}.png")
 
 
-line_V, = ax.plot(x, np.maximum(np.minimum(V/abs(v0), 1.0), -1.0), label="V(x)")
-line_P, = ax.plot(x, np.zeros_like(x), label="P(x)")
+line_V, = ax.plot(x, np.ones_like(x)*psi_init_energy, label="<H>")
+line_V, = ax.plot(x, V, label="V(x)")
+line_P, = ax.plot(x, np.zeros_like(x), label="P(x) (scaled by 20x)")
 #line_psi, = ax.plot(x, psi.real, label="psi(x)")
 
 ax.legend()
