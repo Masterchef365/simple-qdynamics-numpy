@@ -42,9 +42,9 @@ mass = 1.0
 delta_x = 1.0
 
 x = np.linspace(-10.0, 10.0, N)
-V = smooth_potential(x, v0, -3.0, 1.0, softening=1.1)
-V += smooth_potential(x, v0, 8.0, 1.0, softening=1.1)
-V /= 2.0
+V = smooth_potential(x, v0, -2.0, 1.0, softening=1.1)
+#V += smooth_potential(x, v0, 8.0, 1.0, softening=1.1)
+#V /= 2.0
 psi = np.zeros_like(x, np.complex128)
 
 KE = kinetic_energy_op(mass, delta_x, N)
@@ -63,14 +63,13 @@ eigvects = eigvects[:,idx]
 
 print("Energy eigenvalues: ", E)
 
-# Design the wave function ...
-desired_psi = np.zeros_like(x)
-desired_psi[len(desired_psi)//3] = 1./sqrt(2.)
-desired_psi[len(desired_psi)//3+1] = 1./sqrt(2.)
+# Design the initial wave function ...
+desired_init_psi = np.zeros_like(x)
+desired_init_psi[len(desired_init_psi)//3] = 1.0
 
 fig, ax = plt.subplots()
 
-cj = solve_for_coeffs(eigvects, E, desired_psi)
+cj = solve_for_coeffs(eigvects, E, desired_init_psi)
 
 #print("Coefficients: ", cj)
 
@@ -93,7 +92,7 @@ def update(frame):
 
 
 line_V, = ax.plot(x, np.maximum(np.minimum(V/abs(v0), 1.0), -1.0), label="V(x)")
-line_P, = ax.plot(x, np.ones_like(x), label="P(x)")
+line_P, = ax.plot(x, np.zeros_like(x), label="P(x)")
 #line_psi, = ax.plot(x, psi.real, label="psi(x)")
 
 ax.legend()
