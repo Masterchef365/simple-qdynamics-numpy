@@ -54,6 +54,11 @@ H = np.diag(V) + KE
 
 E, eigvects = np.linalg.eig(H)
 
+# Sort energies and corresponding eigenvectors
+idx = E.argsort()   
+E = E[idx]
+eigvects = eigvects[:,idx]
+
 print(E)
 
 #for i in range(len(eigvects[:5])):
@@ -70,11 +75,18 @@ fig, ax = plt.subplots()
 
 cj = solve_for_coeffs(eigvects, E, desired_psi)
 
+#print(cj)
+
+#cj = np.zeros_like(cj)
+#cj[0] = 1.0
+#cj[len(cj)//3] = 1.0
+#cj[len(cj)//3+1] = 1.0
+
 def update(frame):
     psi = solve_for_psi(cj, eigvects, E, t=float(frame))
     #line_V.set_ydata(np.minimum(V/v0,1.))
     #line_psi.set_ydata(psi.real)
-    line_P.set_ydata((psi * psi.conjugate()).real * 10.)
+    line_P.set_ydata((psi * psi.conjugate()).real)
     #plt.savefig(f"anim/{frame:04}.png")
 
 
