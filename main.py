@@ -1,5 +1,6 @@
 import numpy as np
 from numpy import e
+from math import sqrt
 from matplotlib import pyplot as plt
 from matplotlib.animation import FuncAnimation
 
@@ -34,8 +35,8 @@ def solve_for_coeffs(eigenbasis, energies, psi_0, t=0.0):
 
 
 
-N = 100
-v0 = 0.0
+N = 500
+v0 = 10.0
 mass = 1.0
 delta_x = 1.0
 
@@ -53,21 +54,24 @@ print(E)
 #for i in range(len(eigvects[:5])):
     #plt.plot(x, eigvects[i,:], label=f"psi_{i}(x)")
     #print(eigvects[i,:])
+#plt.show()
 
+# Design the wave function ...
 desired_psi = np.zeros_like(x)
-desired_psi[len(desired_psi)//3] = 1.0
+desired_psi[len(desired_psi)//3] = 1./sqrt(2.)
+desired_psi[len(desired_psi)//3+1] = 1./sqrt(2.)
 
 fig, ax = plt.subplots()
 
 def update(frame):
     cj = solve_for_coeffs(eigvects, E, desired_psi, t = float(frame))
     psi = np.dot(eigvects, cj)
-    line_V.set_ydata(V)
-    line_psi.set_ydata(psi.real * 0.1)
+    line_V.set_ydata(np.minimum(V/v0,1.))
+    line_psi.set_ydata(psi.real)
     line_P.set_ydata((psi * psi.conjugate()).real)
 
 
-line_V, = ax.plot(x, V, label="V(x)")
+line_V, = ax.plot(x, np.minimum(V/v0, 1.0), label="V(x)")
 line_psi, = ax.plot(x, psi.real, label="psi(x)")
 line_P, = ax.plot(x, psi.real**2, label="psi(x)")
 
