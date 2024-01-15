@@ -66,7 +66,7 @@ fig, ax = plt.subplots()
 def update(frame):
     cj = solve_for_coeffs(eigvects, E, desired_psi, t = float(frame))
     psi = np.dot(eigvects, cj)
-    line_V.set_ydata(np.minimum(V/v0,1.))
+    #line_V.set_ydata(np.minimum(V/v0,1.))
     line_psi.set_ydata(psi.real)
     line_P.set_ydata((psi * psi.conjugate()).real)
 
