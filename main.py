@@ -37,7 +37,7 @@ def solve_for_psi(cj, eigenbasis, energies, t):
 
 
 N = 500
-v0 = 10.0
+v0 = -10.0
 mass = 1.0
 delta_x = 1.0
 
@@ -95,12 +95,12 @@ def update(frame):
     P = (psi * psi.conjugate()).real
     line_P.set_ydata(P * 20.)
     #line_psi.set_ydata(psi.real)
-    #plt.savefig(f"anim/{frame:04}.png")
+    plt.savefig(f"anim/{frame:04}.png")
 
 
 line_V, = ax.plot(x, np.ones_like(x)*psi_init_energy, label="<H>")
 line_V, = ax.plot(x, V, label="V(x)")
-line_P, = ax.plot(x, np.zeros_like(x), label="P(x) (scaled by 20x)")
+line_P, = ax.plot(x, np.ones_like(x), label="P(x) (scaled by 20x)")
 #line_psi, = ax.plot(x, psi.real, label="psi(x)")
 
 ax.legend()
