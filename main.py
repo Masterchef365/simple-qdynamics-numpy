@@ -42,7 +42,9 @@ mass = 1.0
 delta_x = 1.0
 
 x = np.linspace(-10.0, 10.0, N)
-V = smooth_potential(x, v0, -3.0, 10.0, softening=0.0)
+V = smooth_potential(x, v0, -3.0, 1.0, softening=1.1)
+V += smooth_potential(x, v0, 8.0, 1.0, softening=1.1)
+V /= 2.0
 psi = np.zeros_like(x, np.complex128)
 
 KE = kinetic_energy_op(mass, delta_x, N)
@@ -59,12 +61,7 @@ idx = E.argsort()
 E = E[idx]
 eigvects = eigvects[:,idx]
 
-print(E)
-
-#for i in range(len(eigvects[:5])):
-    #plt.plot(x, eigvects[i,:], label=f"psi_{i}(x)")
-    #print(eigvects[i,:])
-#plt.show()
+print("Energy eigenvalues: ", E)
 
 # Design the wave function ...
 desired_psi = np.zeros_like(x)
@@ -75,24 +72,29 @@ fig, ax = plt.subplots()
 
 cj = solve_for_coeffs(eigvects, E, desired_psi)
 
+#print("Coefficients: ", cj)
+
 #print(cj)
 
 #cj = np.zeros_like(cj)
 #cj[0] = 1.0
+#cj[0] = 1.0/sqrt(2.0)
+#cj[1] = 1.0/sqrt(2.0)
 #cj[len(cj)//3] = 1.0
 #cj[len(cj)//3+1] = 1.0
 
 def update(frame):
     psi = solve_for_psi(cj, eigvects, E, t=float(frame))
     #line_V.set_ydata(np.minimum(V/v0,1.))
+    P = (psi * psi.conjugate()).real
+    line_P.set_ydata(P)
     #line_psi.set_ydata(psi.real)
-    line_P.set_ydata((psi * psi.conjugate()).real)
     #plt.savefig(f"anim/{frame:04}.png")
 
 
 line_V, = ax.plot(x, np.maximum(np.minimum(V/abs(v0), 1.0), -1.0), label="V(x)")
-#line_psi, = ax.plot(x, psi.real, label="psi(x)")
 line_P, = ax.plot(x, np.ones_like(x), label="P(x)")
+#line_psi, = ax.plot(x, psi.real, label="psi(x)")
 
 ax.legend()
 
@@ -100,6 +102,3 @@ num_frames = N * 1000000  # Adjust the number of frames as needed
 animation = FuncAnimation(fig, update, frames=num_frames, interval=30)
 
 plt.show()
-#print(H)
-
-#plt.ylim(0., 1.)
