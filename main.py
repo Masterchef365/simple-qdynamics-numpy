@@ -21,22 +21,23 @@ def kinetic_energy_op(mass, delta_x, N):
 
 
 # Solve for coefficients (c) for psi(t) in the **energy eigenbasis**
-def solve_for_coeffs(eigenbasis, energies, psi_0, t=0.0):
+def solve_for_coeffs(eigenbasis, energies, psi_0):
     cj = np.linalg.inv(eigenbasis) @ psi_0
-    cj = cj.astype(np.complex128)
+    return cj.astype(np.complex128)
     
+
+# Phases for energy eigenbasis coefficients at time t
+def phases(energies, t):
     # Calculate phases from time and energy
-    phases = e**(-1j * energies * t / hbar)
+    return e**(-1j * energies * t / hbar)
 
-    # Apply this transformation to the wave function 
-    cj *= phases
 
-    return cj
-
+def solve_for_psi(cj, eigenbasis, energies, t):
+    return eigenbasis @ (phases(energies, t) * cj)
 
 
 N = 500
-v0 = -10.0
+v0 = 10.0
 mass = 1.0
 delta_x = 1.0
 
@@ -63,9 +64,10 @@ desired_psi[len(desired_psi)//3+1] = 1./sqrt(2.)
 
 fig, ax = plt.subplots()
 
+cj = solve_for_coeffs(eigvects, E, desired_psi)
+
 def update(frame):
-    cj = solve_for_coeffs(eigvects, E, desired_psi, t = float(frame))
-    psi = np.dot(eigvects, cj)
+    psi = solve_for_psi(cj, eigvects, E, t=float(frame))
     #line_V.set_ydata(np.minimum(V/v0,1.))
     #line_psi.set_ydata(psi.real)
     line_P.set_ydata((psi * psi.conjugate()).real * 10.)
