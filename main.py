@@ -46,7 +46,7 @@ V = smooth_potential(x, v0, 0.0, 10.0, softening=0.0)
 psi = np.zeros_like(x, np.complex128)
 
 KE = kinetic_energy_op(mass, delta_x, N)
-H = np.diag(V) - KE
+H = np.diag(V) + KE
 
 E, eigvects = np.linalg.eig(H)
 
