@@ -26,7 +26,7 @@ def solve_for_coeffs(eigenbasis, energies, psi_0, t=0.0):
     cj = cj.astype(np.complex128)
     
     # Calculate phases from time and energy
-    phases = e**(1j * energies * t / hbar)
+    phases = e**(-1j * energies * t / hbar)
 
     # Apply this transformation to the wave function 
     cj *= phases
