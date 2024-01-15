@@ -17,13 +17,13 @@ def kinetic_energy_op(mass, delta_x, N):
     return -mat * hbar / (2. * mass * delta_x**2)
 
 
-N = 5
-v0 = 1.0
+N = 100
+v0 = -1.0
 mass = 1.0
 delta_x = 1.0
 
 x = np.linspace(-10.0, 10.0, N)
-V = smooth_potential(x, v0, 0.0, 1.0, softening=2.0)
+V = smooth_potential(x, v0, 0.0, 10.0, softening=0.0)
 
 KE = kinetic_energy_op(mass, delta_x, N)
 H = KE + np.diag(V)
@@ -31,8 +31,10 @@ H = KE + np.diag(V)
 E, eigvects = np.linalg.eig(H)
 
 print(E)
-for i in range(len(eigvects)):
-    print(eigvects[i,:])
+
+for i in range(len(eigvects[:5])):
+    plt.plot(x, eigvects[i,:], label=f"psi_{i}(x)")
+    #print(eigvects[i,:])
 
 #print(H)
 
