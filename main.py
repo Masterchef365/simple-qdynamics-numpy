@@ -73,7 +73,7 @@ def update(frame):
 
 line_V, = ax.plot(x, np.minimum(V/v0, 1.0), label="V(x)")
 line_psi, = ax.plot(x, psi.real, label="psi(x)")
-line_P, = ax.plot(x, psi.real**2, label="psi(x)")
+line_P, = ax.plot(x, psi.real**2, label="P(x)")
 
 ax.legend()
 
