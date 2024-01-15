@@ -42,7 +42,7 @@ mass = 1.0
 delta_x = 1.0
 
 x = np.linspace(-10.0, 10.0, N)
-V = smooth_potential(x, v0, 0.0, 10.0, softening=0.0)
+V = smooth_potential(x, v0, -3.0, 10.0, softening=0.0)
 psi = np.zeros_like(x, np.complex128)
 
 KE = kinetic_energy_op(mass, delta_x, N)
@@ -75,6 +75,7 @@ def update(frame):
     #line_V.set_ydata(np.minimum(V/v0,1.))
     #line_psi.set_ydata(psi.real)
     line_P.set_ydata((psi * psi.conjugate()).real * 10.)
+    #plt.savefig(f"anim/{frame:04}.png")
 
 
 line_V, = ax.plot(x, np.maximum(np.minimum(V/abs(v0), 1.0), -1.0), label="V(x)")
