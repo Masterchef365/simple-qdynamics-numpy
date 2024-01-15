@@ -48,6 +48,10 @@ psi = np.zeros_like(x, np.complex128)
 KE = kinetic_energy_op(mass, delta_x, N)
 H = np.diag(V) + KE
 
+# Box instead of ring
+#H[0,-1] = 0.0
+#H[-1,0] = 0.0
+
 E, eigvects = np.linalg.eig(H)
 
 print(E)
