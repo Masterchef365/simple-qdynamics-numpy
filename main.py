@@ -36,7 +36,7 @@ def solve_for_coeffs(eigenbasis, energies, psi_0, t=0.0):
 
 
 N = 500
-v0 = 10.0
+v0 = -10.0
 mass = 1.0
 delta_x = 1.0
 
@@ -45,7 +45,7 @@ V = smooth_potential(x, v0, 0.0, 10.0, softening=0.0)
 psi = np.zeros_like(x, np.complex128)
 
 KE = kinetic_energy_op(mass, delta_x, N)
-H = KE + np.diag(V)
+H = np.diag(V) - KE
 
 E, eigvects = np.linalg.eig(H)
 
@@ -67,17 +67,17 @@ def update(frame):
     cj = solve_for_coeffs(eigvects, E, desired_psi, t = float(frame))
     psi = np.dot(eigvects, cj)
     #line_V.set_ydata(np.minimum(V/v0,1.))
-    line_psi.set_ydata(psi.real)
-    line_P.set_ydata((psi * psi.conjugate()).real)
+    #line_psi.set_ydata(psi.real)
+    line_P.set_ydata((psi * psi.conjugate()).real * 10.)
 
 
-line_V, = ax.plot(x, np.minimum(V/v0, 1.0), label="V(x)")
-line_psi, = ax.plot(x, psi.real, label="psi(x)")
-line_P, = ax.plot(x, psi.real**2, label="P(x)")
+line_V, = ax.plot(x, np.maximum(np.minimum(V/abs(v0), 1.0), -1.0), label="V(x)")
+#line_psi, = ax.plot(x, psi.real, label="psi(x)")
+line_P, = ax.plot(x, np.ones_like(x), label="P(x)")
 
 ax.legend()
 
-num_frames = N * 10  # Adjust the number of frames as needed
+num_frames = N * 1000000  # Adjust the number of frames as needed
 animation = FuncAnimation(fig, update, frames=num_frames, interval=30)
 
 plt.show()
