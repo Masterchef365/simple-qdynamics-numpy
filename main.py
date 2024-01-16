@@ -61,7 +61,7 @@ idx = E.argsort()
 E = E[idx]
 eigvects = eigvects[:,idx]
 
-print("Energy eigenvalues: ", E)
+#print("Energy eigenvalues: ", E)
 
 # Design the initial wave function ...
 desired_init_psi = np.zeros_like(x)
@@ -91,11 +91,24 @@ P_display_mult = 20.0
 #cj[len(cj)//3] = 1.0
 #cj[len(cj)//3+1] = 1.0
 
+print("Computing average...")
+n_avg = 100
+avg = np.zeros_like(x)
+step = 3.0
+for i in range(n_avg):
+    psi = solve_for_psi(cj, eigvects, E, t=float(i)*step)
+    P = (psi * psi.conjugate()).real
+    avg += P
+avg /= float(n_avg)
+
 def update(frame):
     psi = solve_for_psi(cj, eigvects, E, t=float(frame))
     #line_V.set_ydata(np.minimum(V/v0,1.))
     P = (psi * psi.conjugate()).real
+
     line_P.set_ydata(P * P_display_mult)
+
+
     #line_psi.set_ydata(psi.real)
     #plt.savefig(f"anim/{frame:04}.png")
 
@@ -103,10 +116,9 @@ def update(frame):
 line_V, = ax.plot(x, np.ones_like(x)*psi_init_energy, label="<H>")
 line_V, = ax.plot(x, V, label="V(x)")
 line_P, = ax.plot(x, np.ones_like(x), label=f"P(x) (scaled by {P_display_mult}x)")
-#line_psi, = ax.plot(x, psi.real, label="psi(x)")
+line_psi, = ax.plot(x, desired_init_psi, label="init psi")
 
-avg = (cj * eigvects @ cj)**2
-line_avg, = ax.plot(x, avg.real * P_display_mult**2, label=f"(scaled by {P_display_mult**2}x)")
+line_avg_P, = ax.plot(x, avg * P_display_mult, label=f"Average")
 
 ax.legend()
 
