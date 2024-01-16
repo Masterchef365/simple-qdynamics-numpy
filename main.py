@@ -91,15 +91,15 @@ P_display_mult = 20.0
 #cj[len(cj)//3] = 1.0
 #cj[len(cj)//3+1] = 1.0
 
-print("Computing average...")
-n_avg = 100
-avg = np.zeros_like(x)
-step = 3.0
-for i in range(n_avg):
-    psi = solve_for_psi(cj, eigvects, E, t=float(i)*step)
-    P = (psi * psi.conjugate()).real
-    avg += P
-avg /= float(n_avg)
+#print("Computing average...")
+#n_avg = 100
+#avg = np.zeros_like(x)
+#step = 3.0
+#for i in range(n_avg):
+#    psi = solve_for_psi(cj, eigvects, E, t=float(i)*step)
+#    P = (psi * psi.conjugate()).real
+#    avg += P
+#avg /= float(n_avg)
 
 def update(frame):
     psi = solve_for_psi(cj, eigvects, E, t=float(frame))
@@ -116,9 +116,9 @@ def update(frame):
 line_V, = ax.plot(x, np.ones_like(x)*psi_init_energy, label="<H>")
 line_V, = ax.plot(x, V, label="V(x)")
 line_P, = ax.plot(x, np.ones_like(x), label=f"P(x) (scaled by {P_display_mult}x)")
-line_psi, = ax.plot(x, desired_init_psi, label="init psi")
+#line_psi, = ax.plot(x, desired_init_psi, label="init psi")
 
-line_avg_P, = ax.plot(x, avg * P_display_mult, label=f"Average")
+#line_avg_P, = ax.plot(x, avg * P_display_mult, label=f"Average")
 
 ax.legend()
 
