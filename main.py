@@ -42,7 +42,7 @@ mass = 1.0
 delta_x = 1.0
 
 x = np.linspace(-10.0, 10.0, N)
-V = smooth_potential(x, v0, -2.0, 1.0, softening=1.1)
+V = smooth_potential(x, v0, 0.0, 1.0, softening=1.1)
 #V += smooth_potential(x, v0, 8.0, 1.0, softening=1.1)
 #V /= 2.0
 psi = np.zeros_like(x, np.complex128)
@@ -65,7 +65,7 @@ print("Energy eigenvalues: ", E)
 
 # Design the initial wave function ...
 desired_init_psi = np.zeros_like(x)
-desired_init_psi[len(desired_init_psi)//3] = 1.0
+desired_init_psi[N//2] = 1.0
 
 fig, ax = plt.subplots()
 
@@ -73,6 +73,8 @@ cj = solve_for_coeffs(eigvects, E, desired_init_psi)
 
 psi_init_energy = np.sum((cj * cj.conjugate()).real * E)
 print("Psi init energy: ", psi_init_energy)
+
+P_display_mult = 20.0
 
 #most_similar = np.argmin(np.abs(E - psi_init_energy))
 #cj = np.zeros_like(cj)
@@ -93,19 +95,22 @@ def update(frame):
     psi = solve_for_psi(cj, eigvects, E, t=float(frame))
     #line_V.set_ydata(np.minimum(V/v0,1.))
     P = (psi * psi.conjugate()).real
-    line_P.set_ydata(P * 20.)
+    line_P.set_ydata(P * P_display_mult)
     #line_psi.set_ydata(psi.real)
-    plt.savefig(f"anim/{frame:04}.png")
+    #plt.savefig(f"anim/{frame:04}.png")
 
 
 line_V, = ax.plot(x, np.ones_like(x)*psi_init_energy, label="<H>")
 line_V, = ax.plot(x, V, label="V(x)")
-line_P, = ax.plot(x, np.ones_like(x), label="P(x) (scaled by 20x)")
+line_P, = ax.plot(x, np.ones_like(x), label=f"P(x) (scaled by {P_display_mult}x)")
 #line_psi, = ax.plot(x, psi.real, label="psi(x)")
+
+avg = (eigvects @ np.abs(cj)**2)**2
+line_avg, = ax.plot(x, avg.real * P_display_mult, label=f"(scaled by {P_display_mult}x)")
 
 ax.legend()
 
-num_frames = N * 1000000  # Adjust the number of frames as needed
+num_frames = N * 10000  # Adjust the number of frames as needed
 animation = FuncAnimation(fig, update, frames=num_frames, interval=30)
 
 plt.show()
