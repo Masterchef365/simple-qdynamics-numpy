@@ -65,7 +65,7 @@ print("Energy eigenvalues: ", E)
 
 # Design the initial wave function ...
 desired_init_psi = np.zeros_like(x)
-desired_init_psi[N//2] = 1.0
+desired_init_psi[N//2 + 20] = 1.0
 
 fig, ax = plt.subplots()
 
@@ -105,8 +105,8 @@ line_V, = ax.plot(x, V, label="V(x)")
 line_P, = ax.plot(x, np.ones_like(x), label=f"P(x) (scaled by {P_display_mult}x)")
 #line_psi, = ax.plot(x, psi.real, label="psi(x)")
 
-avg = (eigvects @ np.abs(cj)**2)**2
-line_avg, = ax.plot(x, avg.real * P_display_mult, label=f"(scaled by {P_display_mult}x)")
+avg = (cj * eigvects @ cj)**2
+line_avg, = ax.plot(x, avg.real * P_display_mult**2, label=f"(scaled by {P_display_mult**2}x)")
 
 ax.legend()
 
