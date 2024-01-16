@@ -42,7 +42,7 @@ mass = 1.0
 delta_x = 1.0
 
 x = np.linspace(-10.0, 10.0, N)
-V = smooth_potential(x, v0, 0.0, 1.0, softening=0.1)
+V = smooth_potential(x, v0, 1.0, 1.0, softening=0.1)
 V += smooth_potential(x, v0, 8.0, 1.0, softening=0.1)
 V /= 2.0
 psi = np.zeros_like(x, np.complex128)
@@ -91,15 +91,15 @@ P_display_mult = 20.0
 #cj[len(cj)//3] = 1.0
 #cj[len(cj)//3+1] = 1.0
 
-print("Computing average...")
-n_avg = 100
-avg = np.zeros_like(x)
-step = 3.0
-for i in range(n_avg):
-    psi = solve_for_psi(cj, eigvects, E, t=float(i)*step)
-    P = (psi * psi.conjugate()).real
-    avg += P
-avg /= float(n_avg)
+#print("Computing average...")
+#n_avg = 10
+#avg = np.zeros_like(x)
+#step = 3.0
+#for i in range(n_avg):
+#    psi = solve_for_psi(cj, eigvects, E, t=float(i)*step)
+#    P = (psi * psi.conjugate()).real
+#    avg += P
+#avg /= float(n_avg)
 
 def update(frame):
     psi = solve_for_psi(cj, eigvects, E, t=float(frame))
@@ -115,14 +115,14 @@ def update(frame):
 
 line_V, = ax.plot(x, np.ones_like(x)*psi_init_energy, label="<H>")
 line_V, = ax.plot(x, V, label="V(x)")
-line_P, = ax.plot(x, np.ones_like(x), label=f"P(x) (scaled by {P_display_mult}x)")
+line_P, = ax.plot(x, np.ones_like(x), label=f"P(x, t) (scaled by {P_display_mult}x)")
 #line_psi, = ax.plot(x, desired_init_psi, label="init psi")
 
 avg_analytical = eigvects**2 @ cj**2
 #avg = (cj.conjugate() * cj)
-line_avg_P, = ax.plot(x, avg_analytical.real * P_display_mult, label=f"Average (analytical)")
+line_avg_P, = ax.plot(x, avg_analytical.real * P_display_mult, label=f"Average P(x) (analytical)")
 
-line_avg_P, = ax.plot(x, avg.real * P_display_mult, label=f"Average (empirical)")
+#line_avg_P, = ax.plot(x, avg.real * P_display_mult, label=f"Average (empirical)")
 
 #line_cj, = ax.plot(x, cj, label=f"Coefficients")
 
