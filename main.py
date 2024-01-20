@@ -43,8 +43,8 @@ delta_x = 1.0
 
 x = np.linspace(-10.0, 10.0, N)
 V = smooth_potential(x, v0, 1.0, 1.0, softening=0.1)
-V += smooth_potential(x, v0, 8.0, 1.0, softening=0.1)
-V /= 2.0
+#V += smooth_potential(x, v0, 8.0, 1.0, softening=0.1)
+#V /= 2.0
 psi = np.zeros_like(x, np.complex128)
 
 KE = kinetic_energy_op(mass, delta_x, N)
@@ -59,13 +59,14 @@ E, eigvects = np.linalg.eig(H)
 # Sort energies and corresponding eigenvectors
 idx = E.argsort()   
 E = E[idx]
-eigvects = eigvects[:,idx]
+eigvects = eigvects[idx]
 
 #print("Energy eigenvalues: ", E)
 
 # Design the initial wave function ...
 desired_init_psi = np.zeros_like(x)
-desired_init_psi[N//2 + 20] = 1.0
+#desired_init_psi[N//2 + 1] = 1.0
+desired_init_psi = eigvects[-1]
 
 fig, ax = plt.subplots()
 
@@ -74,7 +75,7 @@ cj = solve_for_coeffs(eigvects, E, desired_init_psi)
 psi_init_energy = np.sum((cj * cj.conjugate()).real * E)
 print("Psi init energy: ", psi_init_energy)
 
-P_display_mult = 20.0
+P_display_mult = 50.0
 
 #most_similar = np.argmin(np.abs(E - psi_init_energy))
 #cj = np.zeros_like(cj)
@@ -103,6 +104,7 @@ P_display_mult = 20.0
 
 def update(frame):
     psi = solve_for_psi(cj, eigvects, E, t=float(frame))
+
     #line_V.set_ydata(np.minimum(V/v0,1.))
     P = (psi * psi.conjugate()).real
 
@@ -114,9 +116,11 @@ def update(frame):
 
 
 line_V, = ax.plot(x, np.ones_like(x)*psi_init_energy, label="<H>")
-line_V, = ax.plot(x, V, label="V(x)")
+line_V, = ax.plot(x, V/abs(v0), label="V(x)/V0")
 line_P, = ax.plot(x, np.ones_like(x), label=f"P(x, t) (scaled by {P_display_mult}x)")
 #line_psi, = ax.plot(x, desired_init_psi, label="init psi")
+
+print(cj)
 
 avg_analytical = eigvects**2 @ cj**2
 #avg = (cj.conjugate() * cj)
