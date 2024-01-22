@@ -2,8 +2,9 @@ import sys
 sys.path.insert(0, './target/debug')
 import numpy as np
 
-w = 3
+w = 30
 mat = np.random.rand(w, w)
+mat = mat @ mat.transpose()
 
 import libeig_crate
 
