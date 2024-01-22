@@ -1,10 +1,11 @@
+use nalgebra::DMatrix;
 use pyo3::prelude::*;
 use numpy::{IntoPyArray, PyArray2, PyArray1, PyReadonlyArray2};
 
 /// Formats the sum of two numbers as string.
 #[pyfunction]
 fn eigdecomp<'py>(py: Python<'py>, matrix: PyReadonlyArray2<'py, f64>) -> PyResult<(&'py PyArray1<f64>, &'py PyArray2<f64>)> {
-    //let matrix: DM
+    let matrix: DMatrix<f64> = matrix.readonly().try_as_matrix().unwrap();
     todo!()
 }
 
