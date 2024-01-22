@@ -1,4 +1,4 @@
-use eigenvalues::{Davidson, DavidsonCorrection, SpectrumTarget};
+use eigenvalues::{Davidson, DavidsonCorrection, SpectrumTarget, lanczos::HermitianLanczos};
 use nalgebra::DMatrix;
 use numpy::{IntoPyArray, PyArray1, PyArray2, PyReadonlyArray2, ToPyArray};
 use pyo3::prelude::*;
@@ -12,12 +12,10 @@ fn eigdecomp<'py>(
     let matrix: DMatrix<f64> = matrix.readonly().as_matrix().into();
 
     let n = matrix.ncols();
-    let eig = Davidson::new(
+    let eig = HermitianLanczos::new(
         matrix,
         n,
-        DavidsonCorrection::DPR,
         SpectrumTarget::Lowest,
-        1e-4,
     )
     .unwrap();
 
