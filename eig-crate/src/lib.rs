@@ -1,12 +1,30 @@
+use eigenvalues::{Davidson, DavidsonCorrection, SpectrumTarget};
 use nalgebra::DMatrix;
+use numpy::{IntoPyArray, PyArray1, PyArray2, PyReadonlyArray2, ToPyArray};
 use pyo3::prelude::*;
-use numpy::{IntoPyArray, PyArray2, PyArray1, PyReadonlyArray2};
 
 /// Formats the sum of two numbers as string.
 #[pyfunction]
-fn eigdecomp<'py>(py: Python<'py>, matrix: PyReadonlyArray2<'py, f64>) -> PyResult<(&'py PyArray1<f64>, &'py PyArray2<f64>)> {
-    let matrix: DMatrix<f64> = matrix.readonly().try_as_matrix().unwrap();
-    todo!()
+fn eigdecomp<'py>(
+    py: Python<'py>,
+    matrix: PyReadonlyArray2<'py, f64>,
+) -> PyResult<(&'py PyArray1<f64>, &'py PyArray2<f64>)> {
+    let matrix: DMatrix<f64> = matrix.readonly().as_matrix().into();
+
+    let n = matrix.ncols();
+    let eig = Davidson::new(
+        matrix,
+        n,
+        DavidsonCorrection::DPR,
+        SpectrumTarget::Lowest,
+        1e-4,
+    )
+    .unwrap();
+
+    let eigvals = eig.eigenvalues.as_slice().to_vec().to_pyarray(py);
+    let eigvects = eig.eigenvectors.to_pyarray(py);
+
+    Ok((eigvals, eigvects))
 }
 
 /// A Python module implemented in Rust. The name of this function must match
