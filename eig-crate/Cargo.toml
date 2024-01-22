@@ -7,6 +7,7 @@ edition = "2021"
 [lib]
 name = "eig_crate"
 crate-type = ["cdylib"]
+eigenvalues = "0.4.0"
 
 [dependencies]
 numpy = "0.20.0"

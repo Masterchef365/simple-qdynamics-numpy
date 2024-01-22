@@ -1,9 +1,11 @@
 use pyo3::prelude::*;
+use numpy::{IntoPyArray, PyArray2, PyArray1, PyReadonlyArray2};
 
 /// Formats the sum of two numbers as string.
 #[pyfunction]
-fn sum_as_string(a: usize, b: usize) -> PyResult<String> {
-    Ok((a + b).to_string())
+fn eigdecomp<'py>(py: Python<'py>, matrix: PyReadonlyArray2<'py, f64>) -> PyResult<(&'py PyArray1<f64>, &'py PyArray2<f64>)> {
+    //let matrix: DM
+    todo!()
 }
 
 /// A Python module implemented in Rust. The name of this function must match
@@ -11,6 +13,6 @@ fn sum_as_string(a: usize, b: usize) -> PyResult<String> {
 /// import the module.
 #[pymodule]
 fn libeig_crate(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
-    m.add_function(wrap_pyfunction!(sum_as_string, m)?)?;
+    m.add_function(wrap_pyfunction!(eigdecomp, m)?)?;
     Ok(())
 }
